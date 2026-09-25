@@ -2,17 +2,22 @@
 
 When you save a replay (clip) in OBS, a small card slides in at the top right of your screen. It says **Clip Saved** and shows a thumbnail of the clip, the way NVIDIA's overlay does. You can turn it on or off from inside OBS.
 
-**Nothing to install.** It uses OBS's built-in Lua scripting and one small `.exe` with no dependencies.
+## Install (easy way)
+1. **[Download NovaOBS-Setup.exe](https://github.com/novafova/novaobs/raw/main/NovaOBS-Setup.exe)**
+2. Close OBS.
+3. Double-click `NovaOBS-Setup.exe` and click **Install**.
+4. Open OBS, start the Replay Buffer, and save a replay.
 
-## Download
-Click the green **Code** button, choose **Download ZIP**, and extract it to a folder you'll keep,
-for example `Documents\NovaOBS`. You need Windows 10 or 11 and OBS 28 or newer.
+If Windows says **"Windows protected your PC"**, click **More info → Run anyway**. Windows shows this for any app from a small developer that hasn't paid for a code-signing certificate. All the source code is in this repo.
 
-## Setup
-1. Keep `nova_clip_notify.lua` and `NovaOverlay.exe` in the same folder.
-2. In OBS, open **Tools → Scripts**, click **+** and choose `nova_clip_notify.lua`.
-3. Click **Show test notification** to check that it works.
-4. Start the Replay Buffer and press your "Save Replay" hotkey.
+The installer doesn't need admin rights. To remove Nova OBS, go to **Windows Settings → Apps**, or run the installer again.
+You need Windows 10 or 11 and OBS 28 or newer.
+
+## Install (manual way)
+1. Click the green **Code** button, choose **Download ZIP**, and extract it to a folder you'll keep.
+2. Keep `nova_clip_notify.lua` and `NovaOverlay.exe` in the same folder.
+3. In OBS, open **Tools → Scripts**, click **+** and choose `nova_clip_notify.lua`.
+4. Click **Show test notification** to check that it works.
 
 ## Settings (Tools → Scripts → nova_clip_notify.lua)
 | Setting | What it does |
@@ -33,7 +38,8 @@ for example `Documents\NovaOBS`. You need Windows 10 or 11 and OBS 28 or newer.
 - **Never steals focus.** It is click-through and doesn't take focus, so your game won't minimize.
 - The card appears on the monitor you're playing on. Games need to run in **borderless** or **windowed** mode for it to show; games in true exclusive fullscreen draw over every window.
 
-## Building the exe yourself
+## Building it yourself
 Run `src\build.bat`. It needs the Visual Studio 2022 C++ Build Tools.
+It builds `NovaOverlay.exe` first, then `NovaOBS-Setup.exe`, which contains the overlay and the Lua script.
 
 If something goes wrong, check the error log at `%TEMP%\nova_obs_overlay.log`.
