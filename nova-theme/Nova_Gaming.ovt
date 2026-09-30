@@ -1,0 +1,42 @@
+@OBSThemeMeta {
+    name: 'Nova Gaming';
+    id: 'dev.novaobs.Gaming';
+    extends: 'com.obsproject.Yami';
+    author: 'Nova OBS';
+    dark: 'true';
+}
+
+@OBSThemeVars {
+    /* Neutral graphite keeps the work area quiet. Violet marks active controls. */
+    --grey1: #77727F;
+    --grey2: #625D6A;
+    --grey3: #504B57;
+    --grey4: #403C47;
+    --grey5: #34313B;
+    --grey6: #292630;
+    --grey7: #211F27;
+    --grey8: #17161C;
+
+    --primary: #6C539B;
+    --primary_light: #8067AE;
+    --primary_lighter: #AA91DC;
+    --primary_dark: #513D76;
+    --primary_darker: #382B52;
+
+    --bg_window: var(--grey7);
+    --bg_base: var(--grey6);
+    --bg_preview: var(--grey8);
+
+    --text: #F5F2F9;
+    --text_muted: #BDB6C8;
+    --text_disabled: #9E98A8;
+    --palette_link: #C4ADEE;
+    --palette_linkVisited: #B99CDE;
+
+    --highlight_color: var(--primary_lighter);
+    --input_border_focus: var(--primary_lighter);
+    --button_border_focus: var(--primary_lighter);
+    --tab_border_focus: var(--primary_lighter);
+    --tab_border_selected: var(--primary_lighter);
+    --scrollbar_hover: var(--grey2);
+}

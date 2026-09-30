@@ -1,0 +1,98 @@
+diff --git a/frontend/OBSApp.cpp b/frontend/OBSApp.cpp
+index 0d6d0e2..933547a 100644
+--- a/frontend/OBSApp.cpp
++++ b/frontend/OBSApp.cpp
+@@ -353,7 +353,7 @@ void OBSApp::InitUserConfigDefaults()
+ 
+ 	config_set_default_string(userConfig, "General", "HotkeyFocusType", "NeverDisableHotkeys");
+ 
+-	config_set_default_bool(userConfig, "BasicWindow", "PreviewEnabled", true);
++	config_set_default_bool(userConfig, "BasicWindow", "PreviewEnabled", false);
+ 	config_set_default_bool(userConfig, "BasicWindow", "PreviewProgramMode", false);
+ 	config_set_default_bool(userConfig, "BasicWindow", "SceneDuplicationMode", true);
+ 	config_set_default_bool(userConfig, "BasicWindow", "SwapScenesMode", true);
+diff --git a/frontend/cmake/templates/ui-config.h.in b/frontend/cmake/templates/ui-config.h.in
+index bbe0063..ec24d67 100644
+--- a/frontend/cmake/templates/ui-config.h.in
++++ b/frontend/cmake/templates/ui-config.h.in
+@@ -13,4 +13,4 @@
+ #define YOUTUBE_CLIENTID_HASH 0x@YOUTUBE_CLIENTID_HASH@
+ #define YOUTUBE_SECRET_HASH   0x@YOUTUBE_SECRET_HASH@
+ 
+-#define DEFAULT_THEME "com.obsproject.Yami.Original"
++#define DEFAULT_THEME "dev.novaobs.Gaming"
+diff --git a/frontend/widgets/OBSBasic.cpp b/frontend/widgets/OBSBasic.cpp
+index b6f5445..29143e9 100644
+--- a/frontend/widgets/OBSBasic.cpp
++++ b/frontend/widgets/OBSBasic.cpp
+@@ -755,7 +755,7 @@ bool OBSBasic::InitBasicConfigDefaults()
+ 	config_set_default_string(activeConfiguration, "SimpleOutput", "Preset", "veryfast");
+ 	config_set_default_string(activeConfiguration, "SimpleOutput", "NVENCPreset2", "p5");
+ 	config_set_default_string(activeConfiguration, "SimpleOutput", "RecQuality", "Stream");
+-	config_set_default_bool(activeConfiguration, "SimpleOutput", "RecRB", false);
++	config_set_default_bool(activeConfiguration, "SimpleOutput", "RecRB", true);
+ 	config_set_default_int(activeConfiguration, "SimpleOutput", "RecRBTime", 20);
+ 	config_set_default_int(activeConfiguration, "SimpleOutput", "RecRBSize", 512);
+ 	config_set_default_string(activeConfiguration, "SimpleOutput", "RecRBPrefix", "Replay");
+@@ -853,9 +853,9 @@ bool OBSBasic::InitBasicConfigDefaults()
+ 	}
+ 
+ 	config_set_default_uint(activeConfiguration, "Video", "FPSType", 0);
+-	config_set_default_string(activeConfiguration, "Video", "FPSCommon", "30");
+-	config_set_default_uint(activeConfiguration, "Video", "FPSInt", 30);
+-	config_set_default_uint(activeConfiguration, "Video", "FPSNum", 30);
++	config_set_default_string(activeConfiguration, "Video", "FPSCommon", "60");
++	config_set_default_uint(activeConfiguration, "Video", "FPSInt", 60);
++	config_set_default_uint(activeConfiguration, "Video", "FPSNum", 60);
+ 	config_set_default_uint(activeConfiguration, "Video", "FPSDen", 1);
+ 	config_set_default_string(activeConfiguration, "Video", "ScaleType", "bicubic");
+ 	config_set_default_string(activeConfiguration, "Video", "ColorFormat", "NV12");
+@@ -2127,7 +2127,7 @@ void OBSBasic::UpdateTitleBar()
+ 	const char *profile = config_get_string(App()->GetUserConfig(), "Basic", "Profile");
+ 	const char *sceneCollection = config_get_string(App()->GetUserConfig(), "Basic", "SceneCollection");
+ 
+-	name << "OBS ";
++	name << "Nova OBS ";
+ 	if (previewProgramMode) {
+ 		name << "Studio ";
+ 	}
+diff --git a/plugins/frontend-tools/scripts.cpp b/plugins/frontend-tools/scripts.cpp
+index 7d35d24..080a7df 100644
+--- a/plugins/frontend-tools/scripts.cpp
++++ b/plugins/frontend-tools/scripts.cpp
+@@ -28,6 +28,7 @@
+ #include <util/platform.h>
+ #include <util/util.hpp>
+ 
++#include <cstring>
+ #include <string>
+ 
+ #include "ui_scripts.h"
+@@ -586,6 +587,7 @@ static void load_script_data(obs_data_t *load_data, bool, void *)
+ 	delete scriptData;
+ 	scriptData = new ScriptData;
+ 
++	bool novaScriptLoaded = false;
+ 	size_t size = obs_data_array_count(array);
+ 	for (size_t i = 0; i < size; i++) {
+ 		OBSDataAutoRelease obj = obs_data_array_item(array, i);
+@@ -594,9 +596,19 @@ static void load_script_data(obs_data_t *load_data, bool, void *)
+ 
+ 		obs_script_t *script = obs_script_create(path, settings);
+ 		if (script) {
++			if (strstr(path, "nova_clip_notify.lua"))
++				novaScriptLoaded = true;
+ 			scriptData->scripts.emplace_back(script);
+ 		}
+ 	}
++	if (!novaScriptLoaded) {
++		BPtr<char> novaPath = obs_module_file("scripts/nova_clip_notify.lua");
++		if (novaPath) {
++			obs_script_t *script = obs_script_create(novaPath, nullptr);
++			if (script)
++				scriptData->scripts.emplace_back(script);
++		}
++	}
+ 
+ 	if (scriptsWindow) {
+ 		scriptsWindow->RefreshLists();

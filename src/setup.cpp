@@ -11,6 +11,7 @@
 //   --uninstall             interactive uninstall (used by Windows "Apps")
 //   --test-root <dir>       silent install into <dir>\install using <dir>\scenes (testing)
 //   --test-root <dir> --uninstall   silent uninstall of the above
+//   --portable-root <dir>   silent install into a portable OBS package
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -411,6 +412,19 @@ static EditResult EditCollection(const std::wstring& file, const std::string& sc
     }
     if (scripts->type != Json::Arr) return EditResult::Failed;
 
+    if (!scriptPath.empty()) {
+        size_t novaCount = 0;
+        bool exactPath = false;
+        for (auto& entry : scripts->items) {
+            Json* path = entry.type == Json::Obj ? entry.get("path") : nullptr;
+            if (path && path->type == Json::Str && path->raw.find(kScriptNameA) != std::string::npos) {
+                ++novaCount;
+                exactPath = path->raw == JsonEscape(scriptPath);
+            }
+        }
+        if (novaCount == 1 && exactPath) return EditResult::Unchanged;
+    }
+
     // Remove every existing Nova OBS entry (any location), remembering its settings.
     Json settings = Json::object();
     bool haveSettings = false, removed = false;
@@ -605,6 +619,12 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int) {
             std::wstring root = argv[++i];
             p.installDir = root + L"\\install";
             p.scenesDir = root + L"\\scenes";
+            p.registry = false;
+            g_silent = true;
+        } else if (_wcsicmp(argv[i], L"--portable-root") == 0 && i + 1 < argc) {
+            std::wstring root = argv[++i];
+            p.installDir = root + L"\\data\\obs-plugins\\frontend-tools\\scripts";
+            p.scenesDir = root + L"\\config\\obs-studio\\basic\\scenes";
             p.registry = false;
             g_silent = true;
         }
