@@ -20,10 +20,16 @@ BrandingText "Nova OBS 32.2.2"
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\64bit\obs64.exe"
+!define MUI_FINISHPAGE_RUN_FUNCTION LaunchNova
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_LANGUAGE "English"
+
+Function LaunchNova
+  SetOutPath "$INSTDIR\bin\64bit"
+  Exec '"$INSTDIR\bin\64bit\obs64.exe"'
+FunctionEnd
 
 Section "Nova OBS" Main
   SetOutPath "$INSTDIR\bin"
@@ -89,6 +95,8 @@ Section "Nova OBS" Main
   camera_done:
 
   CreateDirectory "$SMPROGRAMS\Nova OBS"
+  ; NSIS stores $OUTDIR as the shortcut's working directory.
+  SetOutPath "$INSTDIR\bin\64bit"
   CreateShortcut "$SMPROGRAMS\Nova OBS\Nova OBS.lnk" "$INSTDIR\bin\64bit\obs64.exe" "" "$INSTDIR\bin\64bit\obs64.exe" 0 SW_SHOWNORMAL "" "Launch Nova OBS"
   CreateShortcut "$SMPROGRAMS\Nova OBS\Uninstall Nova OBS.lnk" "$INSTDIR\Uninstall Nova OBS.exe"
   WriteUninstaller "$INSTDIR\Uninstall Nova OBS.exe"
