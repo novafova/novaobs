@@ -47,7 +47,7 @@ local settings = {
     position = "top-right",
     duration = 4.0,
     scale = 100,
-    show_thumbnail = true,
+    show_thumbnail = false,
     play_sound = false,
     hide_from_capture = true,
 }
@@ -243,7 +243,7 @@ end
 -- ---------------------------------------------------------------------------
 
 function script_description()
-    return [[<h3 style="color:#9d85ff">Nova OBS &mdash; Clip Saved Notifications</h3>
+    return [[<h3 style="color:#9d82d6">Nova OBS &mdash; Clip Saved Notifications</h3>
 <p>Shows a <b>Clip Saved</b> card with a thumbnail when the replay buffer is saved.</p>
 <p>Keep <b>NovaOverlay.exe</b> in the same folder as this script. No other installs needed.</p>]]
 end
@@ -273,7 +273,7 @@ function script_defaults(s)
     obs.obs_data_set_default_string(s, "position", "top-right")
     obs.obs_data_set_default_double(s, "duration", 4.0)
     obs.obs_data_set_default_int(s, "scale", 100)
-    obs.obs_data_set_default_bool(s, "show_thumbnail", true)
+    obs.obs_data_set_default_bool(s, "show_thumbnail", false)
     obs.obs_data_set_default_bool(s, "play_sound", false)
     obs.obs_data_set_default_bool(s, "hide_from_capture", true)
 end

@@ -45,8 +45,8 @@ using namespace Gdiplus;
 #endif
 
 static const wchar_t* kClassName = L"NovaOBSClipToast";
-static const Color kAccent(255, 124, 92, 255);
-static const BYTE kBgR = 20, kBgG = 21, kBgB = 28;
+static const Color kAccent(255, 157, 130, 214);
+static const BYTE kBgR = 27, kBgG = 25, kBgB = 32;
 
 static volatile bool g_quit = false;
 
@@ -321,7 +321,7 @@ static Card BuildCard(double scale, Bitmap* thumbSrc, const std::wstring& subtit
             }
             mask.UnlockBits(&bd);
         }
-        BoxBlur(alpha, iw, ih, max(1, S(4)));
+        BoxBlur(alpha, iw, ih, max(1, S(3)));
     }
 
     Bitmap out(iw, ih, PixelFormat32bppPARGB);
@@ -331,7 +331,7 @@ static Card BuildCard(double scale, Bitmap* thumbSrc, const std::wstring& subtit
         if (out.LockBits(&r, ImageLockModeWrite, PixelFormat32bppPARGB, &bd) == Ok) {
             for (int y = 0; y < ih; ++y) {
                 uint32_t* row = (uint32_t*)((BYTE*)bd.Scan0 + (size_t)y * bd.Stride);
-                for (int x = 0; x < iw; ++x) row[x] = (uint32_t)(alpha[(size_t)y * iw + x] * 130 / 255) << 24;
+                for (int x = 0; x < iw; ++x) row[x] = (uint32_t)(alpha[(size_t)y * iw + x] * 74 / 255) << 24;
             }
             out.UnlockBits(&bd);
         }
@@ -380,17 +380,16 @@ static Card BuildCard(double scale, Bitmap* thumbSrc, const std::wstring& subtit
 
         SolidBrush accent(kAccent);
         SolidBrush titleBrush(Color(255, 245, 246, 250));
-        SolidBrush subBrush(Color(255, 158, 162, 178));
+        SolidBrush subBrush(Color(255, 188, 182, 197));
 
         auto line = [&](REAL cy, REAL h) { return RectF(textX, oy + cy - h / 2, avail, h); };
 
         g.DrawString(L"NOVA OBS  •  REPLAY", -1, fLabel, line((REAL)S(21), (REAL)S(16)), &fmt, &accent);
 
-        // Check-mark badge
+        // Bare check mark, kept clear of the title's text bounds.
         const REAL d = (REAL)S(18);
         const REAL ix = textX, iy = oy + S(43) - d / 2;
-        g.FillEllipse(&accent, ix, iy, d, d);
-        Pen check(Color(255, 255, 255, 255), max(1.5f, d * 0.11f));
+        Pen check(kAccent, max(1.5f, d * 0.11f));
         check.SetStartCap(LineCapRound);
         check.SetEndCap(LineCapRound);
         check.SetLineJoin(LineJoinRound);
